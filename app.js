@@ -9,7 +9,7 @@ const password = require('passport')
 const passportLocalMongoose = require('passport-local-mongoose');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-var findOrCreate = require('mongoose-findorcreate')
+const findOrCreate = require('mongoose-findorcreate')
 
 
  
