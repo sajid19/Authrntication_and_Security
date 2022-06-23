@@ -63,8 +63,10 @@ passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/secrets"
+    
   },
   function(accessToken, refreshToken, profile, cb) {
+    console.log(profile);
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
@@ -79,15 +81,15 @@ app.get("/" , function (req, res) {
     
 });
 
-app.get('/auth/google',
+app.get("/auth/google",
   passport.authenticate('google', { scope: ['profile'] })
   );
 
-  app.get('/auth/google/secrets', 
+  app.get("/auth/google/secrets", 
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
     
-    res.redirect('/secrets');
+    res.redirect("/secrets");
   });
 
 app.get("/login" , function (req, res) {
@@ -104,7 +106,7 @@ app.get("/secrets",function (req, res) {
             console.log(err);
         }else{
             if(foundUser){
-                res.render("secrets",{userswithSecrets: foundUser})
+                res.render("secrets",{userswithSecrets: foundUser});
             }
         }
         
@@ -122,25 +124,26 @@ app.get("/submit", function (req, res) {
     
 });
 
+
 app.post("/submit" , function (req, res) {
   const submittedSecret = req.body.secret;
-  console.log(req.user.id);
   
-  User.findById(req.body.id, function (err ,foundUser) {
+  
+  User.findById(req.user.id, function (err ,foundUser) {
     if(err){
         console.log(err);
     }else{
         if (foundUser){
-        foundUser.secret.push(submittedSecret);
+        foundUser.secret = submittedSecret;
         foundUser.save(function () {
             res.redirect("/secrets")
         
             
         });
-    }
-    }
+     }
+  }
     
-  });
+ });
     
 });
 
@@ -195,7 +198,10 @@ app.post("/login" , function (req, res) {
 
 
 
-
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
 
 
 
