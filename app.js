@@ -86,7 +86,7 @@ app.get('/auth/google',
   app.get('/auth/google/secrets', 
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect secrets.
+    
     res.redirect('/secrets');
   });
 
@@ -121,11 +121,12 @@ app.get("/submit", function (req, res) {
 
     
 });
+
 app.post("/submit" , function (req, res) {
-  const submittedSecret = req.body.secret
-  console.log(req.user._id);
+  const submittedSecret = req.body.secret;
+  console.log(req.user.id);
   
-  User.findById(req.body._id, function (err ,foundUser) {
+  User.findById(req.body.id, function (err ,foundUser) {
     if(err){
         console.log(err);
     }else{
